@@ -1,0 +1,8 @@
+flask
+flask-cors
+python-dotenv
+groq
+requests
+reportlab
+PyPDF2
+gunicorn
