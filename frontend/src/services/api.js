@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://127.0.0.1:5000/api";
+const API = "https://composable-ai-mock-interviewer-ldcv.onrender.com/api";
 
 export const fetchTopics = () =>
   axios.get(`${API}/topics`);
