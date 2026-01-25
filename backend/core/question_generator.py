@@ -8,17 +8,27 @@ from config.prompts import (
 
 def sanitize_question(text: str) -> str:
     """
-    Final safety net to ensure exactly ONE interviewer-style question.
+    Final safety net:
+    - If code exists, NEVER strip it
+    - Otherwise return one clean interviewer-style question
     """
-    if not text:
-        return "Can you explain a key technical decision you made in this project?"
 
+    if not text:
+        return "Can you explain a key technical decision you made?"
+
+    text = text.strip()
+
+    # 🔥 VERY IMPORTANT:
+    # If LLM included code, return FULL content
+    if "```" in text:
+        return text
+
+    # Otherwise clean up to ONE readable question
     lines = [l.strip() for l in text.split("\n") if l.strip()]
 
-    # Prefer first clean question line
     for line in lines:
-        if "?" in line and len(line) < 300:
-            return line.strip()
+        if line.endswith("?") and len(line) < 300:
+            return line
 
     # Fallback
     return lines[0][:300]
