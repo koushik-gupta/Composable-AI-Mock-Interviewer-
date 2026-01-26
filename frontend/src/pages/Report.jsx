@@ -29,7 +29,7 @@ export default function Report() {
   const verdict = score !== null ? getVerdict(score) : null;
 
   const handleDownload = async () => {
-    const res = await downloadReportPdf(sessionId);
+    const res = await downloadReportPdf(report);
     const blob = new Blob([res.data], { type: "application/pdf" });
     const url = window.URL.createObjectURL(blob);
 

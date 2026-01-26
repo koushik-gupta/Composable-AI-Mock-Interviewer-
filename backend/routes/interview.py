@@ -1,5 +1,9 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_file
 import uuid
+import io
+
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
 
 from core.question_generator import generate_next_question
 from core.evaluator import evaluate_answer
@@ -26,7 +30,7 @@ def start_interview():
     form = request.form
 
     name = form.get("name")
-    interview_mode = form.get("mode", "normal")  # 🔥 frontend sends "mode"
+    interview_mode = form.get("mode", "normal")
     confidence = int(form.get("confidence", 5))
 
     if not name:
@@ -36,9 +40,6 @@ def start_interview():
     project_readme = ""
     project_name = ""
 
-    # ---------------------------
-    # NORMAL INTERVIEW
-    # ---------------------------
     if interview_mode == "normal":
         role = form.get("role")
         topic = form.get("topic")
@@ -53,9 +54,6 @@ def start_interview():
                 return jsonify({"error": res}), 400
             resume_text = res
 
-    # ---------------------------
-    # PROJECT INTERVIEW
-    # ---------------------------
     elif interview_mode == "project":
         github_url = form.get("github_url")
 
@@ -64,11 +62,9 @@ def start_interview():
 
         project_readme = fetch_readme(github_url)
         if not project_readme:
-            project_readme = "README not available. Ask high-level project architecture questions."
+            project_readme = "README not available. Ask high-level architecture questions."
 
         project_name = extract_repo_name(github_url)
-
-        # force values for project interview
         role = "Technical"
         topic = "Project"
         confidence = 0
@@ -76,9 +72,6 @@ def start_interview():
     else:
         return jsonify({"error": "Invalid interview mode"}), 400
 
-    # ---------------------------
-    # CREATE SESSION
-    # ---------------------------
     session_id = str(uuid.uuid4())
 
     INTERVIEW_SESSIONS[session_id] = {
@@ -135,9 +128,7 @@ def submit_answer():
 
     session = INTERVIEW_SESSIONS.get(session_id)
     if not session:
-        return jsonify({
-            "error": "Session expired. Please restart interview."
-        }), 400
+        return jsonify({"error": "Session expired. Please restart interview."}), 400
 
     question = session["current_question"]
 
@@ -192,3 +183,37 @@ def submit_answer():
         "done": False,
         "next_question": next_question
     }), 200
+
+# ======================================================
+# DOWNLOAD REPORT PDF (STATELESS ✅)
+# ======================================================
+@interview_bp.route("/report/pdf", methods=["POST","OPTIONS"])
+def download_report_pdf():
+    data = request.get_json(silent=True)
+
+    if not data or "report" not in data:
+        return jsonify({"error": "Report content missing"}), 400
+
+    report_text = data["report"]
+
+    buffer = io.BytesIO()
+    pdf = canvas.Canvas(buffer, pagesize=A4)
+    width, height = A4
+
+    y = height - 40
+    for line in report_text.split("\n"):
+        if y < 40:
+            pdf.showPage()
+            y = height - 40
+        pdf.drawString(40, y, line[:110])
+        y -= 14
+
+    pdf.save()
+    buffer.seek(0)
+
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name="Interview_Report.pdf",
+        mimetype="application/pdf"
+    )

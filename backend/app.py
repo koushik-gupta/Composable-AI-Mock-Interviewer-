@@ -15,8 +15,12 @@ def create_app():
     # Enable CORS for frontend (React)
     CORS(
         app,
-        resources={r"/api/*": {"origins": "*"}}
+        resources={r"/api/*": {"origins": "*"}},
+        supports_credentials=False,
+        methods=["GET", "POST", "OPTIONS"],
+        allow_headers=["Content-Type", "Authorization"]
     )
+
 
     # Basic config
     app.config["ENV"] = os.getenv("FLASK_ENV", "development")

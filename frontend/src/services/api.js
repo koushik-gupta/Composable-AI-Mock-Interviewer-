@@ -13,7 +13,9 @@ export const startInterview = (formData) =>
 export const submitAnswer = (payload) =>
   axios.post(`${API}/interview/answer`, payload);
 
-export const downloadReportPdf = (sessionId) =>
-  axios.get(`${API}/interview/report/pdf/${sessionId}`, {
-    responseType: "blob",
-  });
+export const downloadReportPdf = (report) =>
+  axios.post(
+    `${API}/interview/report/pdf`,
+    { report },
+    { responseType: "blob" }
+  );
