@@ -43,7 +43,9 @@ Tone rules:
 - No hints, no explanations
 - One question only
 
-Return ONLY the question text.
+- Return ONLY the question text.
++ If you include code, ALWAYS put it on new lines.
++ Return ONLY the question text.
 """
 
 

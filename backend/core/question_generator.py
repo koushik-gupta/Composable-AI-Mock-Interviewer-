@@ -8,10 +8,10 @@ from config.prompts import (
 
 def sanitize_question(text: str) -> str:
     """
-    Ensures the interview question is complete and readable.
-    - NEVER cuts mid-sentence
-    - Preserves multi-line and multi-part questions
-    - Preserves code blocks if present
+    Ensures interview questions are NEVER incomplete.
+    - Preserves inline or block code
+    - Preserves newlines when code is present
+    - Never merges code into prose
     """
 
     if not text:
@@ -19,11 +19,32 @@ def sanitize_question(text: str) -> str:
 
     text = text.strip()
 
-    # 🔥 If code block exists, return FULL content
-    if "```" in text:
+    # ---------- CODE DETECTION ----------
+    code_indicators = [
+        "def ",
+        "class ",
+        "for ",
+        "while ",
+        "=",
+        "{",
+        "}",
+        "return ",
+        "if ",
+        "else",
+        "print(",
+    ]
+
+    has_code = (
+        "```" in text
+        or any(ind in text for ind in code_indicators)
+        and "\n" in text
+    )
+
+    # 🔥 If code detected → RETURN AS-IS
+    if has_code:
         return text
 
-    # Remove leading numbering like "1.", "Q1.", "-"
+    # ---------- CLEAN QUESTION ONLY ----------
     lines = [l.strip() for l in text.split("\n") if l.strip()]
     cleaned_lines = []
 
@@ -33,7 +54,6 @@ def sanitize_question(text: str) -> str:
 
     final_text = " ".join(cleaned_lines)
 
-    # Ensure it ends properly
     if not final_text.endswith("?"):
         final_text += "?"
 
