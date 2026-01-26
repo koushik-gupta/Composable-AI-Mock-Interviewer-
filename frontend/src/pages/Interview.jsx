@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { submitAnswer } from "../services/api";
 import Editor from "@monaco-editor/react";
+import ReactMarkdown from "react-markdown";
 
 /* -------------------------------
    Language mapping
@@ -94,10 +95,14 @@ export default function Interview() {
      Submit answer
 -------------------------------- */
   const handleSubmit = async () => {
-    if (!textAnswer.trim() && !codeAnswer.trim()) {
-      setError("Please provide an explanation or code before submitting.");
-      return;
-    }
+    if (
+      activeTab === "answer" && !textAnswer.trim() ||
+      activeTab === "code" && !codeAnswer.trim()
+    ) {
+  setError("Please complete the active section before submitting.");
+  return;
+}
+
 
     setLoading(true);
     setError("");
@@ -174,9 +179,11 @@ export default function Interview() {
         </p>
 
         <div className="flex items-start justify-between gap-4 mt-2">
-          <h1 className="text-2xl font-semibold leading-relaxed flex-1">
-            {question}
-          </h1>
+          <div className="prose max-w-none">
+            <ReactMarkdown>
+              {question}
+            </ReactMarkdown>
+          </div>
 
           <button
             onClick={() =>
@@ -248,17 +255,25 @@ export default function Interview() {
                 placeholder="Explain your approach clearly…"
               />
             ) : (
-              <Editor
-                height={ANSWER_BOX_HEIGHT}
-                language={language}
-                theme="vs-dark"
-                value={codeAnswer}
-                onChange={(v) => setCodeAnswer(v || "")}
-                options={{
-                  minimap: { enabled: false },
-                  fontSize: 14,
-                }}
-              />
+            <Editor
+              height={ANSWER_BOX_HEIGHT}
+              language={language}
+              theme="vs-dark"
+              value={codeAnswer}
+              onChange={(v) => setCodeAnswer(v || "")}
+              options={{
+                minimap: { enabled: false },
+                fontSize: 14,
+                tabSize: 4,
+                insertSpaces: true,
+                autoIndent: "advanced",
+                formatOnType: true,
+                formatOnPaste: true,
+                wordWrap: "on",
+                scrollBeyondLastLine: false,
+                automaticLayout: true,
+              }}
+            />
             )}
           </div>
         </div>
