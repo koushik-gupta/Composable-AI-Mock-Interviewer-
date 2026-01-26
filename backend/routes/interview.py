@@ -64,7 +64,7 @@ def start_interview():
 
         project_readme = fetch_readme(github_url)
         if not project_readme:
-            return jsonify({"error": "Unable to fetch README"}), 400
+            project_readme = "README not available. Ask high-level project architecture questions."
 
         project_name = extract_repo_name(github_url)
 

@@ -12,16 +12,29 @@ def extract_repo_name(repo_url: str) -> str:
 
 def fetch_readme(repo_url: str) -> str:
     """
-    Fetch README.md content from GitHub repository
+    Fetch README content from GitHub repository
+    Works reliably on Render / Railway
     """
     try:
         api = repo_url.replace("github.com", "api.github.com/repos")
         url = f"{api}/readme"
-        headers = {"Accept": "application/vnd.github.v3.raw"}
-        r = requests.get(url, headers=headers, timeout=10)
-        return r.text if r.status_code == 200 else ""
-    except Exception:
+
+        headers = {
+            "Accept": "application/vnd.github.v3.raw",
+            "User-Agent": "AI-Mock-Interviewer"
+        }
+
+        r = requests.get(url, headers=headers, timeout=15)
+
+        if r.status_code == 200 and r.text.strip():
+            return r.text
+
         return ""
+
+    except Exception as e:
+        print("README fetch error:", e)
+        return ""
+
 
 
 def is_strong_readme(readme: str) -> bool:
