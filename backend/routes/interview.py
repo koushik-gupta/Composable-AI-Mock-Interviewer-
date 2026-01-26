@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, send_file
 import uuid
 import io
+from flask_cors import cross_origin
 
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
@@ -187,7 +188,8 @@ def submit_answer():
 # ======================================================
 # DOWNLOAD REPORT PDF (STATELESS ✅)
 # ======================================================
-@interview_bp.route("/report/pdf", methods=["POST","OPTIONS"])
+@interview_bp.route("/report/pdf", methods=["POST"])
+@cross_origin()
 def download_report_pdf():
     data = request.get_json(silent=True)
 
