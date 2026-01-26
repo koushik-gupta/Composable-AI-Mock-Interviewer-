@@ -28,4 +28,24 @@ def generate_final_report(
         history=history
     )
 
-    return call_llm(prompt)
+    # First attempt
+    report = call_llm(prompt)
+
+    # 🔥 SAFETY NET: detect incomplete report
+    if "Actionable Recommendations" not in report or "Final Score" not in report:
+        continuation_prompt = (
+            "Continue the SAME interview report EXACTLY from where it stopped.\n"
+            "Do NOT repeat previous sections.\n\n"
+            f"Partial report so far:\n{report}\n\n"
+            "Continue now:"
+        )
+
+        continuation = call_llm(
+            continuation_prompt,
+            temperature=0.4,
+            max_tokens=1024
+        )
+
+        report = report.rstrip() + "\n\n" + continuation.lstrip()
+
+    return report
