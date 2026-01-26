@@ -8,9 +8,10 @@ from config.prompts import (
 
 def sanitize_question(text: str) -> str:
     """
-    Final safety net:
-    - If code exists, NEVER strip it
-    - Otherwise return one clean interviewer-style question
+    Ensures the interview question is complete and readable.
+    - NEVER cuts mid-sentence
+    - Preserves multi-line and multi-part questions
+    - Preserves code blocks if present
     """
 
     if not text:
@@ -18,20 +19,26 @@ def sanitize_question(text: str) -> str:
 
     text = text.strip()
 
-    # 🔥 VERY IMPORTANT:
-    # If LLM included code, return FULL content
+    # 🔥 If code block exists, return FULL content
     if "```" in text:
         return text
 
-    # Otherwise clean up to ONE readable question
+    # Remove leading numbering like "1.", "Q1.", "-"
     lines = [l.strip() for l in text.split("\n") if l.strip()]
+    cleaned_lines = []
 
     for line in lines:
-        if line.endswith("?") and len(line) < 300:
-            return line
+        line = line.lstrip("0123456789.-) ").strip()
+        cleaned_lines.append(line)
 
-    # Fallback
-    return lines[0][:300]
+    final_text = " ".join(cleaned_lines)
+
+    # Ensure it ends properly
+    if not final_text.endswith("?"):
+        final_text += "?"
+
+    return final_text
+
 
 
 def generate_next_question(
