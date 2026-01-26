@@ -129,7 +129,7 @@ Respond ONLY in JSON:
 
 
 FINAL_REPORT_PROMPT = """
-You are generating a final interview report.
+You are a professional technical interviewer generating a final interview report.
 
 Candidate Name: {candidate_name}
 Interview Date: {date}
@@ -140,55 +140,60 @@ Topic: {topic}
 Self-reported confidence: {confidence}/10
 Estimated competence: {estimated_competence}/10
 
-Below is the COMPLETE interview history.
-You MUST use it exactly as given.
-
 INTERVIEW HISTORY:
 {history}
 
 ======================
-REPORT FORMAT (STRICT)
+STRICT OUTPUT FORMAT
 ======================
 
-1. Overall Performance Summary
-- Balanced and fair assessment
-- Acknowledge partial understanding
-- Avoid harsh or discouraging language
+1. Final Score & Verdict
+- Final Score: <number>/10
+- Verdict: Hire | Borderline | Needs Practice
+- One-line justification
 
-2. Strengths
+2. Overall Performance Summary
+- Balanced, fair, and constructive
+- Acknowledge partial correctness
+- Do NOT be harsh or dismissive
+
+3. Strengths
 - Bullet points
-- Based ONLY on actual answers
+- Mention even small positives
+- Be specific
 
-3. Areas for Improvement
+4. Areas for Improvement
 - Bullet points
-- Frame feedback constructively
-- Highlight what can be improved next
+- Phrase constructively (e.g. "Needs more practice with...")
+- No harsh language
 
-4. Confidence vs Competence
-- Compare self confidence and actual performance
+5. Confidence vs Competence
+- Compare self-confidence and observed ability
+- Encourage improvement if confidence is low
 
-5. Question-wise Review (MANDATORY)
-For EACH question, include ALL of the following:
+6. Question-wise Review (MANDATORY, ALL QUESTIONS)
+For EACH question, follow this format EXACTLY:
 
 Q<number>. Question:
-<question text>
+<question>
 
 Candidate Answer:
-<verbatim candidate answer>
+<verbatim answer>
 
 Evaluation:
 - What was correct
-- What was missing or wrong
+- What was partially correct
+- What needs improvement
 
-6. Actionable Recommendations
-- Very specific
-- Practical steps
+7. Actionable Next Steps
+- 4–6 concrete learning steps
+- Practical (practice topics, exercises, habits)
 
 STRICT RULES:
 - DO NOT skip any question
-- DO NOT summarize candidate answers
+- DO NOT cut off mid-report
 - DO NOT invent answers
-- DO NOT omit Candidate Answer sections
+- Keep tone supportive and realistic
 """
 
 # ==================================================
