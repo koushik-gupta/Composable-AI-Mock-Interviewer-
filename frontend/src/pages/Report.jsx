@@ -32,7 +32,6 @@ export default function Report() {
     const res = await downloadReportPdf(report);
     const blob = new Blob([res.data], { type: "application/pdf" });
     const url = window.URL.createObjectURL(blob);
-
     const a = document.createElement("a");
     a.href = url;
     a.download = "Interview_Report.pdf";
