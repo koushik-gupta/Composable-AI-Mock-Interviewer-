@@ -35,11 +35,13 @@ def evaluate_answer(role, topic, question, answer):
     # -------------------------------
     # Skipped / empty answer
     # -------------------------------
-    if is_skipped_answer(answer):
         return {
-            "score": 2,
+            "score": 1,
+            "technical_accuracy": 1,
+            "communication_clarity": 1,
+            "problem_solving": 1,
             "strengths": "The candidate recognized their uncertainty.",
-            "weaknesses": "Did not attempt to explain the concept.",
+            "weaknesses": "Did not attempt to explain the concept. Knowledge gap identified.",
             "depth_assessment": "none"
         }
 
@@ -69,6 +71,9 @@ def evaluate_answer(role, topic, question, answer):
 
         return {
             "score": score,
+            "technical_accuracy": parsed.get("technical_accuracy", 5),
+            "communication_clarity": parsed.get("communication_clarity", 5),
+            "problem_solving": parsed.get("problem_solving", 5),
             "strengths": parsed.get(
                 "strengths",
                 "The candidate demonstrated partial understanding."
@@ -89,6 +94,9 @@ def evaluate_answer(role, topic, question, answer):
         # -------------------------------
         return {
             "score": 5,
+            "technical_accuracy": 5,
+            "communication_clarity": 5,
+            "problem_solving": 5,
             "strengths": "The candidate showed a reasonable attempt and partial understanding.",
             "weaknesses": "Some gaps in explanation or technical depth.",
             "depth_assessment": "surface"

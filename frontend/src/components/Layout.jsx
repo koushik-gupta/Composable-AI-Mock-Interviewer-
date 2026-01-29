@@ -1,34 +1,58 @@
 import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { MessageSquare, LayoutDashboard } from "lucide-react";
 
 export default function Layout({ children }) {
-  return (
-    <div className="min-h-screen w-full flex flex-col bg-gradient-to-br from-slate-50 to-slate-100">
-      
-      {/* Header */}
-      <header className="sticky top-0 z-10 backdrop-blur bg-white/70 dark:bg-slate-900/70 border-b border-slate-200 dark:border-slate-700">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">🤖</span>
-            <h1 className="text-lg font-semibold tracking-tight">
-              AI Mock Interviewer
-            </h1>
-          </div>
+  const location = useLocation();
 
-          <div className="flex items-center gap-4 text-sm text-slate-500">
-            <span>Hackathon Build</span>
+  return (
+    <div className="min-h-screen bg-background text-slate-100 font-sans selection:bg-primary/30">
+
+      {/* Dynamic Background Effects */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-[120px] animate-pulse-slow" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/20 rounded-full blur-[120px] animate-pulse-slow" style={{ animationDelay: '1.5s' }} />
+      </div>
+
+      {/* Navbar */}
+      <nav className="sticky top-0 z-50 border-b border-glass-border bg-background/80 backdrop-blur-xl">
+        <div className="w-full mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2 group">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300">
+              <span className="text-lg">🤖</span>
+            </div>
+            <span className="font-display font-bold text-xl tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
+              AI Interviewer
+            </span>
+          </Link>
+
+          <div className="flex items-center gap-6">
+            <Link to="/" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
+              Home
+            </Link>
+            <a href="https://github.com" target="_blank" rel="noreferrer" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
+              GitHub
+            </a>
           </div>
         </div>
-      </header>
+      </nav>
 
-      {/* Main */}
-      <main className="flex-1 flex items-center justify-center px-6 py-6">
-        {children}
+      {/* Main Content with Transition */}
+      <main className="relative z-10 w-full mx-auto px-4 md:px-8 py-8 min-h-[calc(100vh-64px)] flex flex-col">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="flex-1 flex flex-col"
+          >
+            {children}
+          </motion.div>
+        </AnimatePresence>
       </main>
-
-      {/* Footer */}
-      <footer className="text-center text-xs text-slate-500 dark:text-slate-400 pb-6">
-        Researched and Developed by Koushik Gupta
-      </footer>
     </div>
   );
 }

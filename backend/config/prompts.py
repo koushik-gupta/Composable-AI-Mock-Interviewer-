@@ -102,6 +102,9 @@ Evaluation guidelines:
 Respond ONLY in JSON:
 {{
   "score": number between 0 and 10,
+  "technical_accuracy": number between 0 and 10,
+  "communication_clarity": number between 0 and 10,
+  "problem_solving": number between 0 and 10,
   "strengths": "what the candidate understood correctly",
   "weaknesses": "minor gaps or improvements (if any)",
   "depth_assessment": "none | surface | moderate | deep"
@@ -150,9 +153,10 @@ STRICT OUTPUT FORMAT
 ======================
 
 1. Final Score & Verdict
-- Final Score: <number>/10
+- Final Score: <calculate strictly based on history>/10
 - Verdict: Hire | Borderline | Needs Practice
 - One-line justification
+- CRITICAL: If the candidate skipped many questions, the score MUST be low (e.g. 1-3). Do not inflate scores.
 
 2. Overall Performance Summary
 - Balanced, fair, and constructive
@@ -186,6 +190,7 @@ Evaluation:
 - What was correct
 - What was partially correct
 - What needs improvement
+- If skipped, explain why it matters (knowledge gap)
 
 7. Actionable Next Steps
 - 4–6 concrete learning steps
@@ -196,6 +201,7 @@ STRICT RULES:
 - DO NOT cut off mid-report
 - DO NOT invent answers
 - Keep tone supportive and realistic
+- If answers were "I don't know" or "skip", the final score must reflect this (below 4).
 """
 
 # ==================================================

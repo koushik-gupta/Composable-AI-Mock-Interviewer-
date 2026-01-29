@@ -163,7 +163,11 @@ def submit_answer():
             session["qa_history"],
             session["name"]
         )
-        return jsonify({"done": True, "report": report}), 200
+        return jsonify({
+            "done": True, 
+            "report": report,
+            "evaluation_history": session["evaluation_history"]
+        }), 200
 
     next_question = generate_next_question(
         role=session["role"],
