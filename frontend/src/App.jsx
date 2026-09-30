@@ -3,6 +3,8 @@ import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Interview from "./pages/Interview";
+import Setup from "./pages/Setup";
+import PreCheck from "./pages/PreCheck";
 import Report from "./pages/Report";
 
 export default function App() {
@@ -10,6 +12,8 @@ export default function App() {
     <Layout>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/interview/new" element={<Setup />} />
+        <Route path="/precheck/:sessionId" element={<PreCheck />} />
         <Route path="/interview/:sessionId" element={<Interview />} />
         <Route path="/report/:sessionId" element={<Report />} />
       </Routes>

@@ -18,6 +18,7 @@ def create_app():
         resources={r"/api/*": {"origins": "*"}}
     )
 
+
     # Basic config
     app.config["ENV"] = os.getenv("FLASK_ENV", "development")
     app.config["JSON_SORT_KEYS"] = False
